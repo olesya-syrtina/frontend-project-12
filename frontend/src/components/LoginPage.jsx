@@ -2,9 +2,34 @@ import axios from 'axios';
 import React from 'react';
 import { useFormik } from 'formik';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import loginPic from '../assets/loginPic.jpg';
+import { actions as auth } from '../slices/authSlice.js';
+import { useDispatch } from 'react-redux';
+
+const handleSubmit = async (values, dispatch, setStatus) => {
+    try {
+      const response = await axios.post('/api/v1/login', {
+        username: values.username,
+        password: values.password,
+      });
+      const token = response.data.token;
+      const username = response.data.username;
+      localStorage.setItem(username, JSON.stringify(token));
+      dispatch(auth.logIn({ username, token }));
+      setStatus(null);
+      return true;
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        setStatus('Неверное имя пользователя или пароль');
+      } else {
+        setStatus('Произошла ошибка при входе. Повторите попытку позже.');
+      }
+      console.log('Ошибка при отправке данных:', error);
+      return false;
+    }
+};  
 
 const SignupSchema = Yup.object().shape({
     name: Yup.string()
@@ -18,14 +43,20 @@ const SignupSchema = Yup.object().shape({
   });
 
 const SignupForm = () => {
+   const navigate = useNavigate();
+   const dispatch = useDispatch();
+
     const formik = useFormik({
       initialValues: {
         username: "",
         password: "",
       },
       SignupSchema,
-      onSubmit: (values) => {
-        console.log("Форма отправлена", values);
+      onSubmit: async (values, { setStatus }) => {
+        const success = await handleSubmit(values, dispatch, setStatus);
+        if (success) {
+          navigate('/');
+        }
       },
     });
     return (
