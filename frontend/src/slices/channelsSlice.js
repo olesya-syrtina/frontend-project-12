@@ -49,6 +49,10 @@ const channelsSlice = createSlice({
       .addCase(fetchChannels.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.channels = action.payload;
+        if (!state.currentChannelId) {
+          const generalChannel = state.channels.find(ch => ch.name === 'general');
+          state.currentChannelId = generalChannel ? generalChannel.id : (state.channels[0] && state.channels[0].id);
+        }
       })
       .addCase(fetchChannels.rejected, (state, action) => {
         state.status = 'failed';

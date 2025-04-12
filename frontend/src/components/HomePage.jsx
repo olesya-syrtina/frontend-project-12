@@ -8,10 +8,9 @@ const HomePage = () => {
   return (
     <>
       <Header />
-
       <Container fluid className="h-100 my-4 overflow-hidden rounded shadow">
         <Row className="h-100 bg-white flex-md-row">
-          <Col xs={4} md={2} lg={2} className="border-end bg-light">
+          <Col md={3} className="border-end pt-5 px-0 bg-light">
             <Channels />
           </Col>
           <Messages />

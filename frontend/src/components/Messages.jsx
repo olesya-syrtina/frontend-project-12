@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Col, Form, Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
@@ -9,6 +9,9 @@ const Messages = () => {
   const dispatch = useDispatch();
   const { messages, status, error } = useSelector((state) => state.messages);
   const { token, username } = useSelector((state) => state.authorization);
+  const currentChannelId = useSelector((state) => state.channels.currentChannelId);  
+  const channels = useSelector((state) => state.channels.channels);
+  
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef(null);
 
@@ -18,18 +21,18 @@ const Messages = () => {
     }
   }, [dispatch, status]);
 
-  useEffect(() => {
-    const handleNewMessage = (message) => {
-      if (message.channelId === '1') {
-        dispatch(addMessage(message));
-      }
-    };
+  const handleNewMessage = useCallback((message) => {
+    if (message.channelId === currentChannelId) {
+      dispatch(addMessage(message));
+    }
+  }, [dispatch, currentChannelId]);
 
+  useEffect(() => {
     socket.on('newMessage', handleNewMessage);
     return () => {
       socket.off('newMessage', handleNewMessage);
     };
-  }, [dispatch]);
+  }, [handleNewMessage]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -38,35 +41,35 @@ const Messages = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
-
+    
     const tempId = `temp-${Date.now()}`;
     const optimisticMessage = {
-      id: tempId,      
+      id: tempId,
       tempId,
       body: newMessage,
-      channelId: '1',    
+      channelId: currentChannelId,
       username,
       optimistic: true,
     };
 
     dispatch(addMessage(optimisticMessage));
+
     try {
       const response = await axios.post(
         '/api/v1/messages',
         {
           body: newMessage,
-          channelId: '1',
+          channelId: currentChannelId,
           username,
         },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
       dispatch(confirmMessage({ tempId, message: response.data }));
-
+      
       socket.emit('newMessage', response.data, (ack) => {
-        console.log('Сообщение доставлено, ack:', ack);
+        console.log('Сообщение доставлено, подтверждено:', ack);
       });
     } catch (err) {
       console.error('Ошибка отправки сообщения', err);
@@ -75,7 +78,11 @@ const Messages = () => {
     setNewMessage('');
   };
 
-  const messagesForGeneral = messages.filter((m) => m.channelId === '1');
+  const messagesForCurrentChannel = messages.filter(
+    (m) => m.channelId === currentChannelId
+  );
+
+  const currentChannel = channels.find(c => c.id === currentChannelId) || { name: 'Канал' };
 
   return (
     <Col className="bg-white d-flex flex-column">
@@ -85,19 +92,17 @@ const Messages = () => {
       >
         <div className="bg-light mb-4 p-3 shadow-sm small">
           <p className="m-0">
-            <b># general</b>
+            <b># {currentChannel.name}</b>
           </p>
           <span className="text-muted">
-            {messagesForGeneral.length}{' '}
-            {messagesForGeneral.length === 1 ? 'сообщение' : 'сообщений'}
+            {messagesForCurrentChannel.length}{' '}
+            {messagesForCurrentChannel.length === 1 ? 'сообщение' : 'сообщений'}
           </span>
         </div>
         {status === 'loading' && <p>Загрузка сообщений...</p>}
-        {status === 'failed' && (
-          <p className="text-danger">Ошибка загрузки: {error}</p>
-        )}
+        {status === 'failed' && <p className="text-danger">Ошибка загрузки: {error}</p>}
         {status === 'succeeded' &&
-          messagesForGeneral.map((message) => (
+          messagesForCurrentChannel.map((message) => (
             <div key={message.id} className="text-break mb-2">
               <b>{message.username}</b>: {message.body}
             </div>
