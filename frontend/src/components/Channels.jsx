@@ -8,6 +8,7 @@ import RemoveChannelModal from './modal/Remove.jsx';
 import RenameChannelModal from './modal/Rename.jsx';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 const Channels = () => {
   const { t } = useTranslation();
@@ -43,8 +44,10 @@ const Channels = () => {
       dispatch(addChannel(newChannel));
       dispatch(setCurrentChannel(newChannel.id));
       setShowAddModal(false);
+      toast.success(t('toast.channelCreated'));
     } catch (err) {
       console.error(t('channels.error'), err);
+      toast.error(t('toast.channelCreateError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -63,8 +66,10 @@ const Channels = () => {
       }
       setShowRemoveModal(false);
       setSelectedChannel(null);
+      toast.success(t('toast.channelRemoved'));
     } catch (err) {
       console.error(t('channels.error'), err);
+      toast.error(t('toast.channelRemoveError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -81,8 +86,10 @@ const Channels = () => {
       dispatch(updateChannel(updatedChannel));
       setShowRenameModal(false);
       setSelectedChannel(null);
+      toast.success(t('toast.channelRenamed'));
     } catch (err) {
       console.error(t('channels.error'), err);
+      toast.error(t('toast.channelRenameError'));
     } finally {
       setIsSubmitting(false);
     }

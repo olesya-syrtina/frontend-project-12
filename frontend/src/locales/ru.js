@@ -62,7 +62,16 @@ const ru = {
     "messages.default.channel": "Канал",
     "messages.count.one": "сообщение",
     "messages.count.other": "сообщений",
-    "messages.errorSend": "Ошибка отправки сообщения"
+    "messages.errorSend": "Ошибка отправки сообщения",
+
+    // Toast
+    "toast.channelCreated": "Канал создан",
+    "toast.channelCreateError": "Ошибка создания канала",
+    "toast.channelRenamed": "Канал переименован",
+    "toast.channelRenameError": "Ошибка переименования канала",
+    "toast.channelRemoved": "Канал удалён",
+    "toast.channelRemoveError": "Ошибка удаления канала",
+    "toast.networkError": "Ошибка сети или отсутствие соединения"
   };
   
   export default ru;

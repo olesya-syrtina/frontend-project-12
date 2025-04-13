@@ -8,6 +8,7 @@ import { logIn } from '../slices/authSlice';
 import { useNavigate, Link } from 'react-router-dom';
 import headerImage from '../assets/avatar_1.jpg';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 const SignupPage = () => {
   const { t } = useTranslation();
@@ -48,6 +49,7 @@ const SignupPage = () => {
         } else {
           setFieldError('username', t('signup.error.generic'));
         }
+        toast.error(t('toast.networkError'));
       } finally {
         setSubmitting(false);
       }

@@ -5,6 +5,7 @@ import axios from 'axios';
 import { fetchMessages, addMessage, confirmMessage } from '../slices/messagesSlice';
 import socket from '../socket';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 const Messages = () => {
   const { t } = useTranslation();
@@ -75,6 +76,7 @@ const Messages = () => {
       });
     } catch (err) {
       console.error(t('messages.errorSend'), err);
+      toast.error(t('toast.networkError'));
     }
 
     setNewMessage('');

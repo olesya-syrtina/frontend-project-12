@@ -7,6 +7,7 @@ import loginPic from '../assets/loginPic.jpg';
 import { logIn } from '../slices/authSlice';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 const LoginPage = () => {
   const { t } = useTranslation();
@@ -36,6 +37,7 @@ const LoginPage = () => {
           setStatus(t('login.error.generic'));
         }
         console.error(t('login.error.generic'), error);
+        toast.error(t('toast.networkError'));
       }
     },
   });
