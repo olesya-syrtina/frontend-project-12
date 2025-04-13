@@ -4,8 +4,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { fetchMessages, addMessage, confirmMessage } from '../slices/messagesSlice';
 import socket from '../socket';
+import { useTranslation } from 'react-i18next';
 
 const Messages = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { messages, status, error } = useSelector((state) => state.messages);
   const { token, username } = useSelector((state) => state.authorization);
@@ -72,7 +74,7 @@ const Messages = () => {
         console.log('Сообщение доставлено, подтверждено:', ack);
       });
     } catch (err) {
-      console.error('Ошибка отправки сообщения', err);
+      console.error(t('messages.errorSend'), err);
     }
 
     setNewMessage('');
@@ -82,7 +84,7 @@ const Messages = () => {
     (m) => m.channelId === currentChannelId
   );
 
-  const currentChannel = channels.find(c => c.id === currentChannelId) || { name: 'Канал' };
+  const currentChannel = channels.find(c => c.id === currentChannelId) || { name: t('messages.default.channel') };
 
   return (
     <Col className="bg-white d-flex flex-column">
@@ -96,11 +98,13 @@ const Messages = () => {
           </p>
           <span className="text-muted">
             {messagesForCurrentChannel.length}{' '}
-            {messagesForCurrentChannel.length === 1 ? 'сообщение' : 'сообщений'}
+            {messagesForCurrentChannel.length === 1 
+              ? t('messages.count.one') 
+              : t('messages.count.other')}
           </span>
         </div>
-        {status === 'loading' && <p>Загрузка сообщений...</p>}
-        {status === 'failed' && <p className="text-danger">Ошибка загрузки: {error}</p>}
+        {status === 'loading' && <p>{t('messages.loading')}</p>}
+        {status === 'failed' && <p className="text-danger">{t('messages.error', { error })}</p>}
         {status === 'succeeded' &&
           messagesForCurrentChannel.map((message) => (
             <div key={message.id} className="text-break mb-2">
@@ -114,12 +118,12 @@ const Messages = () => {
           <Form.Group className="d-flex">
             <Form.Control
               type="text"
-              placeholder="Введите сообщение..."
+              placeholder={t('messages.placeholder')}
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
             />
             <Button variant="primary" type="submit" className="ms-2">
-              Отправить
+              {t('messages.send')}
             </Button>
           </Form.Group>
         </Form>

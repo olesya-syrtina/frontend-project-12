@@ -7,11 +7,13 @@ import AddChannelModal from './modal/Add.jsx';
 import RemoveChannelModal from './modal/Remove.jsx';
 import RenameChannelModal from './modal/Rename.jsx';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 const Channels = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { channels, status, currentChannelId, error } = useSelector((state) => state.channels);
-  const { token, username } = useSelector((state) => state.authorization);
+  const { token } = useSelector((state) => state.authorization);
   
   const [showAddModal, setShowAddModal] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
@@ -42,7 +44,7 @@ const Channels = () => {
       dispatch(setCurrentChannel(newChannel.id));
       setShowAddModal(false);
     } catch (err) {
-      console.error('Ошибка добавления канала', err);
+      console.error(t('channels.error'), err);
     } finally {
       setIsSubmitting(false);
     }
@@ -62,7 +64,7 @@ const Channels = () => {
       setShowRemoveModal(false);
       setSelectedChannel(null);
     } catch (err) {
-      console.error('Ошибка удаления канала', err);
+      console.error(t('channels.error'), err);
     } finally {
       setIsSubmitting(false);
     }
@@ -80,7 +82,7 @@ const Channels = () => {
       setShowRenameModal(false);
       setSelectedChannel(null);
     } catch (err) {
-      console.error('Ошибка переименования канала', err);
+      console.error(t('channels.error'), err);
     } finally {
       setIsSubmitting(false);
     }
@@ -88,9 +90,9 @@ const Channels = () => {
 
   let content;
   if (status === 'loading') {
-    content = <div className="p-3">Загрузка...</div>;
+    content = <div className="p-3">{t('channels.loading')}</div>;
   } else if (status === 'failed') {
-    content = <div className="p-3 text-danger">Ошибка: {error}</div>;
+    content = <div className="p-3 text-danger">{t('channels.error', { error })}</div>;
   } else {
     content = channels.map((channel) => (
       <Channel
@@ -107,9 +109,9 @@ const Channels = () => {
   return (
     <div className="d-flex flex-column h-100">
       <div className="d-flex mt-1 justify-content-between mb-2 ps-4 pe-2 p-4">
-        <strong>Каналы</strong>
+        <strong>{t('channels.title')}</strong>
         <Button variant="outline-primary" size="sm" onClick={() => setShowAddModal(true)}>
-          +
+          {t('channels.add')}
         </Button>
       </div>
       <Nav variant="pills" className="flex-column overflow-auto" style={{ flexGrow: 1 }}>

@@ -7,22 +7,24 @@ import axios from 'axios';
 import { logIn } from '../slices/authSlice';
 import { useNavigate, Link } from 'react-router-dom';
 import headerImage from '../assets/avatar_1.jpg';
+import { useTranslation } from 'react-i18next';
 
 const SignupPage = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const validationSchema = Yup.object({
     username: Yup.string()
-      .min(3, 'Имя пользователя должно содержать от 3 до 20 символов')
-      .max(20, 'Имя пользователя должно содержать от 3 до 20 символов')
-      .required('Обязательное поле'),
+      .min(3, t('signup.validation.usernameLength'))
+      .max(20, t('signup.validation.usernameLength'))
+      .required(t('signup.validation.required')),
     password: Yup.string()
-      .min(6, 'Пароль должен быть не менее 6 символов')
-      .required('Обязательное поле'),
+      .min(6, t('signup.validation.passwordMin'))
+      .required(t('signup.validation.required')),
     confirmPassword: Yup.string()
-      .oneOf([Yup.ref('password')], 'Пароли должны совпадать')
-      .required('Обязательное поле'),
+      .oneOf([Yup.ref('password')], t('signup.validation.passwordsMatch'))
+      .required(t('signup.validation.required')),
   });
 
   const formik = useFormik({
@@ -42,9 +44,9 @@ const SignupPage = () => {
         navigate('/');
       } catch (error) {
         if (error.response && error.response.status === 409) {
-          setFieldError('username', 'Пользователь с таким именем уже существует');
+          setFieldError('username', t('signup.error.userExists'));
         } else {
-          setFieldError('username', 'Ошибка регистрации. Попробуйте ещё раз.');
+          setFieldError('username', t('signup.error.generic'));
         }
       } finally {
         setSubmitting(false);
@@ -60,22 +62,22 @@ const SignupPage = () => {
             <Card className="card shadow-sm">
               <Card.Body className="d-flex flex-column flex-md-row justify-content-around align-items-center p-5">
                 <div>
-                  <img src={headerImage} className="rounded-circle" alt="Регистрация" />
+                  <img src={headerImage} className="rounded-circle" alt={t('signup.title')} />
                 </div>
                 <Form className="w-50" onSubmit={formik.handleSubmit} noValidate>
-                  <h1 className="text-center mb-4">Регистрация</h1>
+                  <h1 className="text-center mb-4">{t('signup.title')}</h1>
                   <Form.Group className="form-floating mb-3" controlId="username">
                     <Form.Control
                       type="text"
                       name="username"
-                      placeholder="От 3 до 20 символов"
+                      placeholder={t('signup.placeholder.username')}
                       autoComplete="username"
                       value={formik.values.username}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       isInvalid={formik.touched.username && !!formik.errors.username}
                     />
-                    <Form.Label>Имя пользователя</Form.Label>
+                    <Form.Label>{t('signup.placeholder.username')}</Form.Label>
                     <Form.Control.Feedback type="invalid">
                       {formik.errors.username}
                     </Form.Control.Feedback>
@@ -84,14 +86,14 @@ const SignupPage = () => {
                     <Form.Control
                       type="password"
                       name="password"
-                      placeholder="Не менее 6 символов"
+                      placeholder={t('signup.placeholder.password')}
                       autoComplete="new-password"
                       value={formik.values.password}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       isInvalid={formik.touched.password && !!formik.errors.password}
                     />
-                    <Form.Label>Пароль</Form.Label>
+                    <Form.Label>{t('signup.placeholder.password')}</Form.Label>
                     <Form.Control.Feedback type="invalid">
                       {formik.errors.password}
                     </Form.Control.Feedback>
@@ -100,20 +102,20 @@ const SignupPage = () => {
                     <Form.Control
                       type="password"
                       name="confirmPassword"
-                      placeholder="Пароли должны совпадать"
+                      placeholder={t('signup.placeholder.confirmPassword')}
                       autoComplete="new-password"
                       value={formik.values.confirmPassword}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       isInvalid={formik.touched.confirmPassword && !!formik.errors.confirmPassword}
                     />
-                    <Form.Label>Подтвердите пароль</Form.Label>
+                    <Form.Label>{t('signup.placeholder.confirmPassword')}</Form.Label>
                     <Form.Control.Feedback type="invalid">
                       {formik.errors.confirmPassword}
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Button variant="outline-primary" type="submit" className="w-100" disabled={formik.isSubmitting}>
-                    Зарегистрироваться
+                    {t('signup.submit')}
                   </Button>
                 </Form>
               </Card.Body>
