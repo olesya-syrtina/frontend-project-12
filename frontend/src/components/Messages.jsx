@@ -6,6 +6,7 @@ import { fetchMessages, addMessage, confirmMessage } from '../slices/messagesSli
 import socket from '../socket';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import leoProfanity from 'leo-profanity';
 
 const Messages = () => {
   const { t } = useTranslation();
@@ -45,11 +46,13 @@ const Messages = () => {
     e.preventDefault();
     if (!newMessage.trim()) return;
     
+    const cleanMessage = leoProfanity.clean(newMessage);
+
     const tempId = `temp-${Date.now()}`;
     const optimisticMessage = {
       id: tempId,
       tempId,
-      body: newMessage,
+      body: cleanMessage,
       channelId: currentChannelId,
       username,
       optimistic: true,
@@ -61,7 +64,7 @@ const Messages = () => {
       const response = await axios.post(
         '/api/v1/messages',
         {
-          body: newMessage,
+          body: cleanMessage,
           channelId: currentChannelId,
           username,
         },

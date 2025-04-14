@@ -19,16 +19,22 @@ const ru = {
     "modal.add.placeholder": "Имя канала",
     "modal.add.cancel": "Отменить",
     "modal.add.submit": "Отправить",
-  
+    "modal.add.length": "Длина должна быть от 3 до 20 символов",
+    "modal.add.duplicate": "Такое имя уже существует",
+    "modal.add.required": "Обязательное поле",
+
     "modal.remove.title": "Удалить канал",
     "modal.remove.confirm": "Уверены?",
     "modal.remove.cancel": "Отменить",
     "modal.remove.submit": "Удалить",
-  
+    
     "modal.rename.title": "Переименовать канал",
     "modal.rename.placeholder": "Имя канала",
     "modal.rename.cancel": "Отменить",
     "modal.rename.submit": "Отправить",
+    "modal.rename.length": "Длина должна быть от 3 до 20 символов",
+    "modal.rename.duplicate": "Такое имя уже существует",
+    "modal.rename.required": "Обязательное поле",
   
     // LoginPage
     "login.title": "Войти",
@@ -48,7 +54,7 @@ const ru = {
     "signup.error.generic": "Ошибка регистрации. Попробуйте ещё раз.",
     "signup.submit": "Зарегистрироваться",
     "signup.link.login": "Войти",
-  
+
     "signup.validation.required": "Обязательное поле",
     "signup.validation.usernameLength": "От 3 до 20 символов",
     "signup.validation.passwordMin": "Минимум 6 символов",
@@ -63,7 +69,7 @@ const ru = {
     "messages.count.one": "сообщение",
     "messages.count.other": "сообщений",
     "messages.errorSend": "Ошибка отправки сообщения",
-
+  
     // Toast
     "toast.channelCreated": "Канал создан",
     "toast.channelCreateError": "Ошибка создания канала",

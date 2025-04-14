@@ -2,23 +2,28 @@ import React, { useEffect, useRef } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
+import leoProfanity from 'leo-profanity';
 
 const RenameChannelModal = ({ show, handleClose, currentName, existingChannelNames, onSubmit, isSubmitting }) => {
+  const { t } = useTranslation();
+
   const validationSchema = Yup.object({
     name: Yup.string()
-      .min(3, 'Длина должна быть от 3 до 20 символов')
-      .max(20, 'Длина должна быть от 3 до 20 символов')
-      .notOneOf(existingChannelNames.filter(name => name !== currentName), 'Такое имя уже существует')
-      .required('Обязательное поле'),
+      .min(3, t('modal.rename.length'))
+      .max(20, t('modal.rename.length'))
+      .notOneOf(existingChannelNames.filter(name => name !== currentName), t('modal.rename.duplicate'))
+      .required(t('modal.rename.required')),
   });
 
   const formik = useFormik({
     initialValues: { name: currentName },
     validationSchema,
     onSubmit: (values) => {
-      onSubmit(values.name);
+      const cleanName = leoProfanity.clean(values.name);
+      onSubmit(cleanName);
     },
-    enableReinitialize: true, 
+    enableReinitialize: true,
   });
 
   const inputRef = useRef(null);
@@ -33,7 +38,7 @@ const RenameChannelModal = ({ show, handleClose, currentName, existingChannelNam
   return (
     <Modal show={show} onHide={handleClose} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Переименовать канал</Modal.Title>
+        <Modal.Title>{t('modal.rename.title')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form noValidate onSubmit={formik.handleSubmit}>
@@ -44,7 +49,7 @@ const RenameChannelModal = ({ show, handleClose, currentName, existingChannelNam
               onChange={formik.handleChange}
               isInvalid={formik.touched.name && !!formik.errors.name}
               ref={inputRef}
-              placeholder="Имя канала"
+              placeholder={t('modal.rename.placeholder')}
             />
             <Form.Control.Feedback type="invalid">
               {formik.errors.name}
@@ -52,10 +57,10 @@ const RenameChannelModal = ({ show, handleClose, currentName, existingChannelNam
           </Form.Group>
           <div className="d-flex justify-content-end mt-3">
             <Button variant="secondary" onClick={handleClose} className="me-2">
-              Отменить
+              {t('modal.rename.cancel')}
             </Button>
             <Button variant="primary" type="submit" disabled={isSubmitting}>
-              Отправить
+              {t('modal.rename.submit')}
             </Button>
           </div>
         </Form>

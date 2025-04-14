@@ -2,21 +2,26 @@ import React, { useEffect, useRef } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
+import leoProfanity from 'leo-profanity';
 
 const AddChannelModal = ({ show, handleClose, existingChannelNames, onSubmit, isSubmitting }) => {
+  const { t } = useTranslation();
+  
   const validationSchema = Yup.object({
     name: Yup.string()
-      .min(3, 'Длина должна быть от 3 до 20 символов')
-      .max(20, 'Длина должна быть от 3 до 20 символов')
-      .notOneOf(existingChannelNames, 'Такое имя уже существует')
-      .required('Обязательное поле'),
+      .min(3, t('modal.add.length'))
+      .max(20, t('modal.add.length'))
+      .notOneOf(existingChannelNames, t('modal.add.duplicate'))
+      .required(t('modal.add.required')),
   });
 
   const formik = useFormik({
     initialValues: { name: '' },
     validationSchema,
     onSubmit: (values) => {
-      onSubmit(values.name);
+      const cleanName = leoProfanity.clean(values.name);
+      onSubmit(cleanName);
     },
   });
 
@@ -32,7 +37,7 @@ const AddChannelModal = ({ show, handleClose, existingChannelNames, onSubmit, is
   return (
     <Modal show={show} onHide={handleClose} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Добавить канал</Modal.Title>
+        <Modal.Title>{t('modal.add.title')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form noValidate onSubmit={formik.handleSubmit}>
@@ -43,7 +48,7 @@ const AddChannelModal = ({ show, handleClose, existingChannelNames, onSubmit, is
               onChange={formik.handleChange}
               isInvalid={formik.touched.name && !!formik.errors.name}
               ref={inputRef}
-              placeholder="Имя канала"
+              placeholder={t('modal.add.placeholder')}
             />
             <Form.Control.Feedback type="invalid">
               {formik.errors.name}
@@ -51,10 +56,10 @@ const AddChannelModal = ({ show, handleClose, existingChannelNames, onSubmit, is
           </Form.Group>
           <div className="d-flex justify-content-end mt-3">
             <Button variant="secondary" onClick={handleClose} className="me-2">
-              Отменить
+              {t('modal.add.cancel')}
             </Button>
             <Button variant="primary" type="submit" disabled={isSubmitting}>
-              Отправить
+              {t('modal.add.submit')}
             </Button>
           </div>
         </Form>

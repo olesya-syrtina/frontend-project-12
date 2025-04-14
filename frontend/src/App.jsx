@@ -7,8 +7,15 @@ import SignupPage from './components/SignupPage.jsx';
 import NotFoundPage from './components/NotFoundPage.jsx';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
- 
+import React, { useEffect } from 'react';
+import leoProfanity from 'leo-profanity';
+
 const App = () => {
+  useEffect(() => {
+    const ruDict = leoProfanity.getDictionary('ru');
+    leoProfanity.add(ruDict);
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>
@@ -20,6 +27,6 @@ const App = () => {
       <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} />
     </BrowserRouter>
   );
-}
+};
 
 export default App;

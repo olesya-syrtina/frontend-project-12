@@ -18,7 +18,7 @@
     "debug": "^4.3.4",
     "formik": "^2.2.9",
     "i18next": "^21.8.4",
-    "leo-profanity": "^1.5.0",
+    "leo-profanity": "^1.7.0",
     "lodash": "^4.17.21",
     "react": "^18.1.0",
     "react-bootstrap": "^2.4.0",
