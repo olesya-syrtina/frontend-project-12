@@ -9,11 +9,13 @@ import { useNavigate, Link } from 'react-router-dom';
 import headerImage from '../assets/avatar_1.jpg';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import { useRollbar } from '@rollbar/react';
 
 const SignupPage = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const rollbar = useRollbar();
 
   const validationSchema = Yup.object({
     username: Yup.string()
@@ -50,6 +52,7 @@ const SignupPage = () => {
           setFieldError('username', t('signup.error.generic'));
         }
         toast.error(t('toast.networkError'));
+        rollbar.error(error);
       } finally {
         setSubmitting(false);
       }

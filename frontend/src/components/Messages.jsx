@@ -7,10 +7,12 @@ import socket from '../socket';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import leoProfanity from 'leo-profanity';
+import { useRollbar } from '@rollbar/react';
 
 const Messages = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const rollbar = useRollbar();
   const { messages, status, error } = useSelector((state) => state.messages);
   const { token, username } = useSelector((state) => state.authorization);
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);  
@@ -80,6 +82,7 @@ const Messages = () => {
     } catch (err) {
       console.error(t('messages.errorSend'), err);
       toast.error(t('toast.networkError'));
+      rollbar.error(err);
     }
 
     setNewMessage('');

@@ -9,10 +9,12 @@ import RenameChannelModal from './modal/Rename.jsx';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import { useRollbar } from '@rollbar/react';
 
 const Channels = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const rollbar = useRollbar();
   const { channels, status, currentChannelId, error } = useSelector((state) => state.channels);
   const { token } = useSelector((state) => state.authorization);
   
@@ -48,6 +50,7 @@ const Channels = () => {
     } catch (err) {
       console.error(t('channels.error'), err);
       toast.error(t('toast.channelCreateError'));
+      rollbar.error(err);
     } finally {
       setIsSubmitting(false);
     }
@@ -70,6 +73,7 @@ const Channels = () => {
     } catch (err) {
       console.error(t('channels.error'), err);
       toast.error(t('toast.channelRemoveError'));
+      rollbar.error(err);
     } finally {
       setIsSubmitting(false);
     }
@@ -90,6 +94,7 @@ const Channels = () => {
     } catch (err) {
       console.error(t('channels.error'), err);
       toast.error(t('toast.channelRenameError'));
+      rollbar.error(err);
     } finally {
       setIsSubmitting(false);
     }

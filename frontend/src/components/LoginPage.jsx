@@ -8,11 +8,14 @@ import { logIn } from '../slices/authSlice';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import { useRollbar } from '@rollbar/react';
 
 const LoginPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  
+  const rollbar = useRollbar();
 
   const formik = useFormik({
     initialValues: {
@@ -38,6 +41,8 @@ const LoginPage = () => {
         }
         console.error(t('login.error.generic'), error);
         toast.error(t('toast.networkError'));
+        rollbar.error(error);
+        return false;
       }
     },
   });
