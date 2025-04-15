@@ -77,7 +77,13 @@ const ru = {
     "toast.channelRenameError": "Ошибка переименования канала",
     "toast.channelRemoved": "Канал удалён",
     "toast.channelRemoveError": "Ошибка удаления канала",
-    "toast.networkError": "Ошибка сети или отсутствие соединения"
+    "toast.networkError": "Ошибка сети или отсутствие соединения",
+
+    // NotFoundPage
+    "notFound.title": "Страница не найдена",
+    "notFound.homePage": "Но вы можете перейти",
+    "notFound.homePageLink": "на главную страницу"
+
   };
   
   export default ru;

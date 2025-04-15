@@ -10,6 +10,8 @@ import headerImage from '../assets/avatar_1.jpg';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { useRollbar } from '@rollbar/react';
+import Header from './Header.jsx';
+
 
 const SignupPage = () => {
   const { t } = useTranslation();
@@ -61,6 +63,7 @@ const SignupPage = () => {
 
   return (
     <>
+      <Header/>
       <Container className="container-fluid h-100">
         <Row className="justify-content-center align-content-center h-100">
           <Col className="col-12 col-md-8 col-xxl-6">
