@@ -4,7 +4,6 @@ import App from './App.jsx';
 import { Provider } from 'react-redux';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18next';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import store from './slices/index.js';
 import Rollbar from 'rollbar';
 import { Provider as RollbarProvider, ErrorBoundary, useRollbar } from '@rollbar/react';
