@@ -1,10 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import Header from './Header.jsx';
 import Channels from './Channels.jsx';
 import Messages from './Messages.jsx';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
+  const { isLoggedIn } = useSelector(state => state.authorization);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate('/login');
+    }
+  }, [isLoggedIn, navigate]);
+
   return (
     <>
       <Header />
