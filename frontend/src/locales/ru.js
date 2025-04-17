@@ -50,7 +50,7 @@ const ru = {
     "signup.placeholder.username": "Имя пользователя",
     "signup.placeholder.password": "Пароль",
     "signup.placeholder.confirmPassword": "Подтвердите пароль",
-    "signup.error.userExists": "Пользователь с таким именем уже существует",
+    "signup.error.userExists": "Такой пользователь уже существует",
     "signup.error.generic": "Ошибка регистрации. Попробуйте ещё раз.",
     "signup.submit": "Зарегистрироваться",
     "signup.link.login": "Войти",
