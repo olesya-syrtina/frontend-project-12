@@ -4,6 +4,7 @@ const ru = {
     "header.logout": "Выйти",
   
     // Channel
+    "channel.control": "Управление каналом",
     "channel.prefix": "#",
     "channel.delete": "Удалить",
     "channel.rename": "Переименовать",
@@ -40,7 +41,7 @@ const ru = {
     "login.title": "Войти",
     "login.placeholder.username": "Ваш ник",
     "login.placeholder.password": "Пароль",
-    "login.error.invalid": "Неверное имя пользователя или пароль",
+    "login.error.invalid": "Неверные имя пользователя или пароль",
     "login.error.generic": "Произошла ошибка при входе. Повторите попытку позже.",
     "login.link.signup": "Регистрация",
     "login.noAccount": "Нет аккаунта?",
@@ -57,7 +58,7 @@ const ru = {
 
     "signup.validation.required": "Обязательное поле",
     "signup.validation.usernameLength": "От 3 до 20 символов",
-    "signup.validation.passwordMin": "Минимум 6 символов",
+    "signup.validation.passwordMin": "Не менее 6 символов",
     "signup.validation.passwordsMatch": "Пароли должны совпадать",
   
     // Messages
@@ -69,6 +70,7 @@ const ru = {
     "messages.count.one": "сообщение",
     "messages.count.other": "сообщений",
     "messages.errorSend": "Ошибка отправки сообщения",
+    "messages.inputLabel": "Новое сообщение",
   
     // Toast
     "toast.channelCreated": "Канал создан",

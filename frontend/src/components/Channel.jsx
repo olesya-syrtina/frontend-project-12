@@ -16,7 +16,9 @@ const Channel = ({ channel, isActive, onClick, onRemoveClick, onRenameClick }) =
             <span className="me-1">{t('channel.prefix')}</span>
             {channel.name}
           </Button>
-          <Dropdown.Toggle split variant={isActive ? 'secondary' : 'light'} id={`dropdown-${channel.id}`} />
+          <Dropdown.Toggle split variant={isActive ? 'secondary' : 'light'} id={`dropdown-${channel.id}`} >
+          <span class="visually-hidden">{t('channel.control')}</span>
+          </Dropdown.Toggle>
           <Dropdown.Menu>
             <Dropdown.Item onClick={() => onRemoveClick(channel)}>
               {t('channel.delete')}

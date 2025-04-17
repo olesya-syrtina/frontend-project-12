@@ -15,9 +15,9 @@ const Messages = () => {
   const rollbar = useRollbar();
   const { messages, status, error } = useSelector((state) => state.messages);
   const { token, username } = useSelector((state) => state.authorization);
-  const currentChannelId = useSelector((state) => state.channels.currentChannelId);  
+  const currentChannelId = useSelector((state) => state.channels.currentChannelId);
   const channels = useSelector((state) => state.channels.channels);
-  
+
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef(null);
 
@@ -47,7 +47,7 @@ const Messages = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
-    
+
     const cleanMessage = leoProfanity.clean(newMessage);
 
     const tempId = `temp-${Date.now()}`;
@@ -113,12 +113,11 @@ const Messages = () => {
         </div>
         {status === 'loading' && <p>{t('messages.loading')}</p>}
         {status === 'failed' && <p className="text-danger">{t('messages.error', { error })}</p>}
-        {status === 'succeeded' &&
-          messagesForCurrentChannel.map((message) => (
-            <div key={message.id} className="text-break mb-2">
-              <b>{message.username}</b>: {message.body}
-            </div>
-          ))}
+        {messagesForCurrentChannel.map((message) => (
+          <div key={message.id} className="text-break mb-2">
+            <b>{message.username}</b>: {message.body}
+          </div>
+        ))}
         <div ref={messagesEndRef}></div>
       </div>
       <div className="border-top p-3">
@@ -127,6 +126,7 @@ const Messages = () => {
             <Form.Control
               type="text"
               placeholder={t('messages.placeholder')}
+              aria-label={t('messages.inputLabel')}
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
             />
