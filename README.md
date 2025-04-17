@@ -13,6 +13,7 @@ https://frontend-project-12-js75.onrender.com
 
 ## Screenshot
 
+![image](https://github.com/user-attachments/assets/4f8f31a8-2136-4eda-8a1c-1673b40c3247)
 
 ## Запуск проекта
 
