@@ -43,6 +43,7 @@ const RenameChannelModal = ({ show, handleClose, currentName, existingChannelNam
       <Modal.Body>
         <Form noValidate onSubmit={formik.handleSubmit}>
           <Form.Group controlId="name">
+          <Form.Label className="visually-hidden">{t('modal.rename.placeholder')}</Form.Label>
             <Form.Control
               name="name"
               value={formik.values.name}

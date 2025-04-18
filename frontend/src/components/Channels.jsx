@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Nav, Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchChannels, setCurrentChannel, addChannel, updateChannel, removeChannel } from '../slices/channelsSlice';
+import { setCurrentChannel, addChannel, updateChannel, removeChannel } from '../slices/channelsSlice.js';
 import Channel from './Channel.jsx';
 import AddChannelModal from './modal/Add.jsx';
 import RemoveChannelModal from './modal/Remove.jsx';
@@ -17,32 +17,27 @@ const Channels = () => {
   const rollbar = useRollbar();
   const { channels, status, currentChannelId, error } = useSelector((state) => state.channels);
   const { token } = useSelector((state) => state.authorization);
-  
+
   const [showAddModal, setShowAddModal] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
   const [showRenameModal, setShowRenameModal] = useState(false);
   const [selectedChannel, setSelectedChannel] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    if (status === 'idle') {
-      dispatch(fetchChannels());
-    }
-  }, [dispatch, status]);
+  const existingChannelNames = channels.map((c) => c.name);
 
   const handleChannelClick = (channelId) => {
     dispatch(setCurrentChannel(channelId));
   };
 
-  const existingChannelNames = channels.map(c => c.name);
-
   const handleAddChannel = async (name) => {
     setIsSubmitting(true);
     try {
-      const response = await axios.post('/api/v1/channels', { name }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const newChannel = response.data;
+      const { data: newChannel } = await axios.post(
+        '/api/v1/channels',
+        { name },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
       dispatch(addChannel(newChannel));
       dispatch(setCurrentChannel(newChannel.id));
       setShowAddModal(false);
@@ -68,7 +63,6 @@ const Channels = () => {
         dispatch(setCurrentChannel('1'));
       }
       setShowRemoveModal(false);
-      setSelectedChannel(null);
       toast.success(t('toast.channelRemoved'));
     } catch (err) {
       console.error(t('channels.error'), err);
@@ -83,13 +77,13 @@ const Channels = () => {
     if (!selectedChannel) return;
     setIsSubmitting(true);
     try {
-      const response = await axios.patch(`/api/v1/channels/${selectedChannel.id}`, { name }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const updatedChannel = response.data;
+      const { data: updatedChannel } = await axios.patch(
+        `/api/v1/channels/${selectedChannel.id}`,
+        { name },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
       dispatch(updateChannel(updatedChannel));
       setShowRenameModal(false);
-      setSelectedChannel(null);
       toast.success(t('toast.channelRenamed'));
     } catch (err) {
       console.error(t('channels.error'), err);
@@ -129,24 +123,23 @@ const Channels = () => {
       <Nav variant="pills" className="flex-column overflow-auto" style={{ flexGrow: 1 }}>
         {content}
       </Nav>
-      <AddChannelModal 
+      <AddChannelModal
         show={showAddModal}
         handleClose={() => setShowAddModal(false)}
         existingChannelNames={existingChannelNames}
         onSubmit={handleAddChannel}
         isSubmitting={isSubmitting}
       />
-      <RemoveChannelModal 
+      <RemoveChannelModal
         show={showRemoveModal}
-        handleClose={() => { setShowRemoveModal(false); setSelectedChannel(null); }}
-        channelName={selectedChannel ? selectedChannel.name : ''}
+        handleClose={() => setShowRemoveModal(false)}
         onConfirm={handleRemoveChannel}
         isSubmitting={isSubmitting}
       />
-      <RenameChannelModal 
+      <RenameChannelModal
         show={showRenameModal}
-        handleClose={() => { setShowRenameModal(false); setSelectedChannel(null); }}
-        currentName={selectedChannel ? selectedChannel.name : ''}
+        handleClose={() => setShowRenameModal(false)}
+        currentName={selectedChannel?.name}
         existingChannelNames={existingChannelNames}
         onSubmit={handleRenameChannel}
         isSubmitting={isSubmitting}

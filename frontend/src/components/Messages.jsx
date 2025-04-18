@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Col, Form, Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
-import { fetchMessages, addMessage, confirmMessage } from '../slices/messagesSlice';
+import { addMessage, confirmMessage } from '../slices/messagesSlice.js';
 import socket from '../socket';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
@@ -21,17 +21,11 @@ const Messages = () => {
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef(null);
 
-  useEffect(() => {
-    if (status === 'idle') {
-      dispatch(fetchMessages());
-    }
-  }, [dispatch, status]);
-
   const handleNewMessage = useCallback((message) => {
-    if (message.channelId === currentChannelId) {
-      dispatch(addMessage(message));
-    }
-  }, [dispatch, currentChannelId]);
+      if (message.channelId === currentChannelId) {
+        dispatch(addMessage(message));
+      }
+    }, [dispatch, currentChannelId]);
 
   useEffect(() => {
     socket.on('newMessage', handleNewMessage);
@@ -63,22 +57,13 @@ const Messages = () => {
     dispatch(addMessage(optimisticMessage));
 
     try {
-      const response = await axios.post(
+      const { data } = await axios.post(
         '/api/v1/messages',
-        {
-          body: cleanMessage,
-          channelId: currentChannelId,
-          username,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { body: cleanMessage, channelId: currentChannelId, username },
+        { headers: { Authorization: `Bearer ${token}` } },
       );
-      dispatch(confirmMessage({ tempId, message: response.data }));
-      
-      socket.emit('newMessage', response.data, (ack) => {
-        console.log('Сообщение доставлено, подтверждено:', ack);
-      });
+      dispatch(confirmMessage({ tempId, message: data }));
+      socket.emit('newMessage', data);
     } catch (err) {
       console.error(t('messages.errorSend'), err);
       toast.error(t('toast.networkError'));
@@ -96,18 +81,15 @@ const Messages = () => {
 
   return (
     <Col className="bg-white d-flex flex-column">
-      <div
-        className="p-4 flex-grow-1"
-        style={{ minHeight: '80vh', overflowY: 'auto' }}
-      >
+      <div className="p-4 flex-grow-1" style={{ minHeight: '80vh', overflowY: 'auto' }}>
         <div className="bg-light mb-4 p-3 shadow-sm small">
           <p className="m-0">
             <b># {currentChannel.name}</b>
           </p>
           <span className="text-muted">
             {messagesForCurrentChannel.length}{' '}
-            {messagesForCurrentChannel.length === 1 
-              ? t('messages.count.one') 
+            {messagesForCurrentChannel.length === 1
+              ? t('messages.count.one')
               : t('messages.count.other')}
           </span>
         </div>

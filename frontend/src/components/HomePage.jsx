@@ -1,13 +1,16 @@
 import React, { useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Header from './Header.jsx';
 import Channels from './Channels.jsx';
 import Messages from './Messages.jsx';
 import { useNavigate } from 'react-router-dom';
+import { fetchChannels } from '../slices/channelsSlice.js';
+import { fetchMessages } from '../slices/messagesSlice.js';
 
 const HomePage = () => {
   const { isLoggedIn } = useSelector(state => state.authorization);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,6 +18,13 @@ const HomePage = () => {
       navigate('/login');
     }
   }, [isLoggedIn, navigate]);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      dispatch(fetchChannels());
+      dispatch(fetchMessages());
+    }
+  }, [isLoggedIn, dispatch]);
 
   return (
     <>
