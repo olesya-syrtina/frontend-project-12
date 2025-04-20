@@ -14,7 +14,7 @@ export const fetchChannels = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Ошибка получения каналов');
     }
-  }
+  },
 );
 
 const channelsSlice = createSlice({
@@ -33,13 +33,13 @@ const channelsSlice = createSlice({
       state.channels.push(action.payload);
     },
     updateChannel: (state, action) => {
-      const index = state.channels.findIndex(ch => ch.id === action.payload.id);
+      const index = state.channels.findIndex((ch) => ch.id === action.payload.id);
       if (index !== -1) {
         state.channels[index] = action.payload;
       }
     },
     removeChannel: (state, action) => {
-      state.channels = state.channels.filter(ch => ch.id !== action.payload);
+      state.channels = state.channels.filter((ch) => ch.id !== action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -51,7 +51,7 @@ const channelsSlice = createSlice({
         state.status = 'succeeded';
         state.channels = action.payload;
         if (!state.currentChannelId) {
-          const generalChannel = state.channels.find(ch => ch.name === 'general');
+          const generalChannel = state.channels.find((ch) => ch.name === 'general');
           state.currentChannelId = generalChannel ? generalChannel.id : (state.channels[0] && state.channels[0].id);
         }
       })
@@ -62,5 +62,7 @@ const channelsSlice = createSlice({
   },
 });
 
-export const { setCurrentChannel, addChannel, updateChannel, removeChannel } = channelsSlice.actions;
+export const {
+  setCurrentChannel, addChannel, updateChannel, removeChannel,
+} = channelsSlice.actions;
 export default channelsSlice.reducer;
