@@ -2,6 +2,7 @@ import {
   useState, useEffect, useRef, useCallback,
 } from 'react';
 import { Col, Form, Button } from 'react-bootstrap';
+import { ArrowRightSquare } from 'react-bootstrap-icons';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
@@ -120,8 +121,9 @@ const Messages = () => {
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
             />
-            <Button variant="primary" type="submit" className="ms-2">
-              {t('messages.send')}
+            <Button variant="light" type="submit" className="btn-group-vertical">
+              <ArrowRightSquare size={20} />
+              <span className="visually-hidden">{t('messages.send')}</span>
             </Button>
           </Form.Group>
         </Form>
