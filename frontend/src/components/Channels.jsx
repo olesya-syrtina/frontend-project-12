@@ -98,13 +98,14 @@ const Channels = () => {
     }
   };
 
-  let content;
-  if (status === 'loading') {
-    content = <div className="p-3">{t('channels.loading')}</div>;
-  } else if (status === 'failed') {
-    content = <div className="p-3 text-danger">{t('channels.error', { error })}</div>;
-  } else {
-    content = channels.map((channel) => (
+  const renderContent = () => {
+    if (status === 'loading') {
+      return <div className="p-3">{t('channels.loading')}</div>;
+    }
+    if (status === 'failed') {
+      return <div className="p-3 text-danger">{t('channels.error', { error })}</div>;
+    }
+    return channels.map((channel) => (
       <Channel
         key={channel.id}
         channel={channel}
@@ -114,7 +115,7 @@ const Channels = () => {
         onRenameClick={(chan) => { setSelectedChannel(chan); setShowRenameModal(true); }}
       />
     ));
-  }
+  };
 
   return (
     <div className="d-flex flex-column h-100">
@@ -125,7 +126,7 @@ const Channels = () => {
         </Button>
       </div>
       <Nav variant="pills" className="flex-column overflow-auto" style={{ flexGrow: 1 }}>
-        {content}
+        {renderContent()}
       </Nav>
       <AddChannelModal
         show={showAddModal}
