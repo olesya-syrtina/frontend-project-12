@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import Header from './Header.jsx';
 import Channels from './Channels.jsx';
 import Messages from './Messages.jsx';
-import { useNavigate } from 'react-router-dom';
 import { fetchChannels } from '../slices/channelsSlice.js';
 import { fetchMessages } from '../slices/messagesSlice.js';
 
 const HomePage = () => {
-  const { isLoggedIn } = useSelector(state => state.authorization);
+  const { isLoggedIn } = useSelector((state) => state.authorization);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

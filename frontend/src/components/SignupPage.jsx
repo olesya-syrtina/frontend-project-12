@@ -1,17 +1,17 @@
-import React from 'react';
-import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
+import {
+  Container, Row, Col, Card, Form, Button,
+} from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
-import { logIn } from '../slices/authSlice';
-import { useNavigate, Link } from 'react-router-dom';
-import headerImage from '../assets/avatar_1.jpg';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { useRollbar } from '@rollbar/react';
+import headerImage from '../assets/avatar_1.jpg';
+import { logIn } from '../slices/authSlice';
 import Header from './Header.jsx';
-
 
 const SignupPage = () => {
   const { t } = useTranslation();
@@ -63,7 +63,7 @@ const SignupPage = () => {
 
   return (
     <>
-      <Header/>
+      <Header />
       <Container className="container-fluid h-100">
         <Row className="justify-content-center align-content-center h-100">
           <Col className="col-12 col-md-8 col-xxl-6">

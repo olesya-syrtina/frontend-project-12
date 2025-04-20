@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
@@ -13,7 +14,7 @@ export const fetchMessages = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Ошибка получения сообщений');
     }
-  }
+  },
 );
 
 const messagesSlice = createSlice({
@@ -30,11 +31,11 @@ const messagesSlice = createSlice({
         if (m.id && newMsg.id && m.id === newMsg.id) return true;
         if (m.tempId && newMsg.tempId && m.tempId === newMsg.tempId) return true;
         if (
-          ((m.optimistic && !newMsg.optimistic) ||
-            (newMsg.optimistic && !m.optimistic)) &&
-          m.body === newMsg.body &&
-          m.username === newMsg.username &&
-          m.channelId === newMsg.channelId
+          ((m.optimistic && !newMsg.optimistic)
+            || (newMsg.optimistic && !m.optimistic))
+          && m.body === newMsg.body
+          && m.username === newMsg.username
+          && m.channelId === newMsg.channelId
         ) {
           return true;
         }

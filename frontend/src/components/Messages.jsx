@@ -1,13 +1,15 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import {
+  useState, useEffect, useRef, useCallback,
+} from 'react';
 import { Col, Form, Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
-import { addMessage, confirmMessage } from '../slices/messagesSlice.js';
-import socket from '../socket';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import leoProfanity from 'leo-profanity';
 import { useRollbar } from '@rollbar/react';
+import socket from '../socket';
+import { addMessage, confirmMessage } from '../slices/messagesSlice.js';
 
 const Messages = () => {
   const { t } = useTranslation();
@@ -22,10 +24,10 @@ const Messages = () => {
   const messagesEndRef = useRef(null);
 
   const handleNewMessage = useCallback((message) => {
-      if (message.channelId === currentChannelId) {
-        dispatch(addMessage(message));
-      }
-    }, [dispatch, currentChannelId]);
+    if (message.channelId === currentChannelId) {
+      dispatch(addMessage(message));
+    }
+  }, [dispatch, currentChannelId]);
 
   useEffect(() => {
     socket.on('newMessage', handleNewMessage);
@@ -74,20 +76,24 @@ const Messages = () => {
   };
 
   const messagesForCurrentChannel = messages.filter(
-    (m) => m.channelId === currentChannelId
+    (m) => m.channelId === currentChannelId,
   );
 
-  const currentChannel = channels.find(c => c.id === currentChannelId) || { name: t('messages.default.channel') };
+  const currentChannel = channels.find((c) => c.id === currentChannelId) || { name: t('messages.default.channel') };
 
   return (
     <Col className="bg-white d-flex flex-column">
       <div className="p-4 flex-grow-1" style={{ minHeight: '80vh', overflowY: 'auto' }}>
         <div className="bg-light mb-4 p-3 shadow-sm small">
           <p className="m-0">
-            <b># {currentChannel.name}</b>
+            <b>
+              #
+              {currentChannel.name}
+            </b>
           </p>
           <span className="text-muted">
-            {messagesForCurrentChannel.length}{' '}
+            {messagesForCurrentChannel.length}
+            {' '}
             {messagesForCurrentChannel.length === 1
               ? t('messages.count.one')
               : t('messages.count.other')}
@@ -97,10 +103,12 @@ const Messages = () => {
         {status === 'failed' && <p className="text-danger">{t('messages.error', { error })}</p>}
         {messagesForCurrentChannel.map((message) => (
           <div key={message.id} className="text-break mb-2">
-            <b>{message.username}</b>: {message.body}
+            <b>{message.username}</b>
+            :
+            {message.body}
           </div>
         ))}
-        <div ref={messagesEndRef}></div>
+        <div ref={messagesEndRef} />
       </div>
       <div className="border-top p-3">
         <Form onSubmit={handleSubmit}>

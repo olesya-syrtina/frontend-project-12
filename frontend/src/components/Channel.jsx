@@ -1,14 +1,17 @@
-import React from 'react';
-import { Nav, Dropdown, ButtonGroup, Button } from 'react-bootstrap';
+import {
+  Nav, Dropdown, ButtonGroup, Button,
+} from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
-const Channel = ({ channel, isActive, onClick, onRemoveClick, onRenameClick }) => {
+const Channel = ({
+  channel, isActive, onClick, onRemoveClick, onRenameClick,
+}) => {
   const { t } = useTranslation();
   return (
     <Nav.Item as="li" className="w-100">
       {channel.removable ? (
         <Dropdown as={ButtonGroup} className="w-100">
-          <Button 
+          <Button
             variant={isActive ? 'secondary' : 'light'}
             onClick={onClick}
             className="text-start text-truncate"
@@ -16,8 +19,8 @@ const Channel = ({ channel, isActive, onClick, onRemoveClick, onRenameClick }) =
             <span className="me-1">{t('channel.prefix')}</span>
             {channel.name}
           </Button>
-          <Dropdown.Toggle split variant={isActive ? 'secondary' : 'light'} id={`dropdown-${channel.id}`} >
-          <span class="visually-hidden">{t('channel.control')}</span>
+          <Dropdown.Toggle split variant={isActive ? 'secondary' : 'light'} id={`dropdown-${channel.id}`}>
+            <span className="visually-hidden">{t('channel.control')}</span>
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <Dropdown.Item onClick={() => onRemoveClick(channel)}>

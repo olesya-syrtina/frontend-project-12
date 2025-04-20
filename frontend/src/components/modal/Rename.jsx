@@ -1,18 +1,20 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import leoProfanity from 'leo-profanity';
 
-const RenameChannelModal = ({ show, handleClose, currentName, existingChannelNames, onSubmit, isSubmitting }) => {
+const RenameChannelModal = ({
+  show, handleClose, currentName, existingChannelNames, onSubmit, isSubmitting,
+}) => {
   const { t } = useTranslation();
 
   const validationSchema = Yup.object({
     name: Yup.string()
       .min(3, t('modal.rename.length'))
       .max(20, t('modal.rename.length'))
-      .notOneOf(existingChannelNames.filter(name => name !== currentName), t('modal.rename.duplicate'))
+      .notOneOf(existingChannelNames.filter((name) => name !== currentName), t('modal.rename.duplicate'))
       .required(t('modal.rename.required')),
   });
 
@@ -43,7 +45,7 @@ const RenameChannelModal = ({ show, handleClose, currentName, existingChannelNam
       <Modal.Body>
         <Form noValidate onSubmit={formik.handleSubmit}>
           <Form.Group controlId="name">
-          <Form.Label className="visually-hidden">{t('modal.rename.placeholder')}</Form.Label>
+            <Form.Label className="visually-hidden">{t('modal.rename.placeholder')}</Form.Label>
             <Form.Control
               name="name"
               value={formik.values.name}

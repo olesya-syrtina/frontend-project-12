@@ -1,21 +1,22 @@
 import axios from 'axios';
-import React from 'react';
 import { useFormik } from 'formik';
-import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
+import {
+  Container, Row, Col, Card, Form, Button,
+} from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import loginPic from '../assets/loginPic.jpg';
-import { logIn } from '../slices/authSlice';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { useRollbar } from '@rollbar/react';
+import { logIn } from '../slices/authSlice';
+import loginPic from '../assets/loginPic.jpg';
 import Header from './Header.jsx';
 
 const LoginPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
+
   const rollbar = useRollbar();
 
   const formik = useFormik({
@@ -29,11 +30,12 @@ const LoginPage = () => {
           username: values.username,
           password: values.password,
         });
-        const token = response.data.token;
-        const username = response.data.username;
+        const { token } = response.data;
+        const { username } = response.data;
         dispatch(logIn({ token, username }));
         setStatus(null);
         navigate('/');
+        return true;
       } catch (error) {
         if (error.response && error.response.status === 401) {
           setStatus(t('login.error.invalid'));
@@ -114,7 +116,10 @@ const LoginPage = () => {
               </Card.Body>
               <Card.Footer className="p-4">
                 <div className="text-center">
-                  <span>{t('login.noAccount')} </span>
+                  <span>
+                    {t('login.noAccount')}
+                    {' '}
+                  </span>
                   <a href="/signup">{t('login.link.signup')}</a>
                 </div>
               </Card.Footer>

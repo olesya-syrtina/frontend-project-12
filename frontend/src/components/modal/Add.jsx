@@ -1,19 +1,21 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import leoProfanity from 'leo-profanity';
 
-const AddChannelModal = ({ show, handleClose, existingChannelNames, onSubmit, isSubmitting }) => {
+const AddChannelModal = ({
+  show, handleClose, existingChannelNames, onSubmit, isSubmitting,
+}) => {
   const { t } = useTranslation();
-  
+
   const validationSchema = Yup.object({
-      name: Yup.string()
-        .min(3, t('modal.add.length'))
-        .max(20, t('modal.add.length'))
-        .notOneOf(existingChannelNames, t('modal.add.duplicate'))
-        .required(t('modal.add.required')),
+    name: Yup.string()
+      .min(3, t('modal.add.length'))
+      .max(20, t('modal.add.length'))
+      .notOneOf(existingChannelNames, t('modal.add.duplicate'))
+      .required(t('modal.add.required')),
   });
 
   const formik = useFormik({
@@ -42,7 +44,7 @@ const AddChannelModal = ({ show, handleClose, existingChannelNames, onSubmit, is
       <Modal.Body>
         <Form noValidate onSubmit={formik.handleSubmit}>
           <Form.Group controlId="name">
-          <Form.Label className="visually-hidden">{t('modal.add.placeholder')}</Form.Label>
+            <Form.Label className="visually-hidden">{t('modal.add.placeholder')}</Form.Label>
             <Form.Control
               name="name"
               value={formik.values.name}

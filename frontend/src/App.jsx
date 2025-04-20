@@ -1,13 +1,13 @@
+import { useEffect } from 'react';
+import leoProfanity from 'leo-profanity';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { ToastContainer } from 'react-toastify';
 import LoginPage from './components/LoginPage.jsx';
 import HomePage from './components/HomePage.jsx';
 import SignupPage from './components/SignupPage.jsx';
 import NotFoundPage from './components/NotFoundPage.jsx';
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import React, { useEffect } from 'react';
-import leoProfanity from 'leo-profanity';
 
 const App = () => {
   useEffect(() => {

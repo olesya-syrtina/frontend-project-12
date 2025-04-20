@@ -1,21 +1,25 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Nav, Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { setCurrentChannel, addChannel, updateChannel, removeChannel } from '../slices/channelsSlice.js';
-import Channel from './Channel.jsx';
-import AddChannelModal from './modal/Add.jsx';
-import RemoveChannelModal from './modal/Remove.jsx';
-import RenameChannelModal from './modal/Rename.jsx';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { useRollbar } from '@rollbar/react';
+import {
+  setCurrentChannel, addChannel, updateChannel, removeChannel,
+} from '../slices/channelsSlice.js';
+import Channel from './Channel.jsx';
+import AddChannelModal from './modal/Add.jsx';
+import RemoveChannelModal from './modal/Remove.jsx';
+import RenameChannelModal from './modal/Rename.jsx';
 
 const Channels = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const rollbar = useRollbar();
-  const { channels, status, currentChannelId, error } = useSelector((state) => state.channels);
+  const {
+    channels, status, currentChannelId, error,
+  } = useSelector((state) => state.channels);
   const { token } = useSelector((state) => state.authorization);
 
   const [showAddModal, setShowAddModal] = useState(false);
@@ -56,7 +60,7 @@ const Channels = () => {
     setIsSubmitting(true);
     try {
       await axios.delete(`/api/v1/channels/${selectedChannel.id}`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       dispatch(removeChannel(selectedChannel.id));
       if (currentChannelId === selectedChannel.id) {

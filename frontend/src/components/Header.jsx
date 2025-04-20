@@ -1,15 +1,14 @@
-import React from 'react';
 import { Navbar, Container, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { logOut } from '../slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { logOut } from '../slices/authSlice';
 
 const Header = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isLoggedIn } = useSelector(state => state.authorization);
+  const { isLoggedIn } = useSelector((state) => state.authorization);
 
   const handleLogOut = () => {
     dispatch(logOut());
