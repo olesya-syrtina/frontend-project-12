@@ -1,5 +1,5 @@
 import {
-  useState, useEffect, useRef, useCallback,
+  useState, useEffect, useRef,
 } from 'react';
 import { Col, Form, Button } from 'react-bootstrap';
 import { ArrowRightSquare } from 'react-bootstrap-icons';
@@ -9,8 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import leoProfanity from 'leo-profanity';
 import { useRollbar } from '@rollbar/react';
-import socket from '../socket';
-import { addMessage, confirmMessage } from '../slices/messagesSlice.js';
+import { addMessage, confirmMessage, fetchMessages } from '../slices/messagesSlice.js';
 
 const Messages = () => {
   const { t } = useTranslation();
@@ -24,18 +23,11 @@ const Messages = () => {
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef(null);
 
-  const handleNewMessage = useCallback((message) => {
-    if (message.channelId === currentChannelId) {
-      dispatch(addMessage(message));
-    }
-  }, [dispatch, currentChannelId]);
-
   useEffect(() => {
-    socket.on('newMessage', handleNewMessage);
-    return () => {
-      socket.off('newMessage', handleNewMessage);
-    };
-  }, [handleNewMessage]);
+    if (status === 'idle') {
+      dispatch(fetchMessages());
+    }
+  }, [dispatch, status]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -66,7 +58,6 @@ const Messages = () => {
         { headers: { Authorization: `Bearer ${token}` } },
       );
       dispatch(confirmMessage({ tempId, message: data }));
-      socket.emit('newMessage', data);
     } catch (err) {
       console.error(t('messages.errorSend'), err);
       toast.error(t('toast.networkError'));
@@ -77,7 +68,7 @@ const Messages = () => {
   };
 
   const messagesForCurrentChannel = messages.filter(
-    (m) => m.channelId === currentChannelId,
+    (m) => String(m.channelId) === String(currentChannelId),
   );
 
   const currentChannel = channels.find((c) => c.id === currentChannelId) || { name: t('messages.default.channel') };

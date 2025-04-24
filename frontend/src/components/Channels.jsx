@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { useRollbar } from '@rollbar/react';
 import {
   setCurrentChannel, addChannel, updateChannel, removeChannel,
+  fetchChannels,
 } from '../slices/channelsSlice.js';
 import Channel from './Channel.jsx';
 import AddChannelModal from './modal/Add.jsx';
@@ -28,6 +29,10 @@ const Channels = () => {
   const [selectedChannel, setSelectedChannel] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  useState(() => {
+    if (status === 'idle') dispatch(fetchChannels());
+  }, [dispatch, status]);
+
   const existingChannelNames = channels.map((c) => c.name);
 
   const handleChannelClick = (channelId) => {
@@ -47,9 +52,8 @@ const Channels = () => {
       setShowAddModal(false);
       toast.success(t('toast.channelCreated'));
     } catch (err) {
-      console.error(t('channels.error'), err);
-      toast.error(t('toast.channelCreateError'));
       rollbar.error(err);
+      toast.error(t('toast.channelCreateError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -69,9 +73,8 @@ const Channels = () => {
       setShowRemoveModal(false);
       toast.success(t('toast.channelRemoved'));
     } catch (err) {
-      console.error(t('channels.error'), err);
-      toast.error(t('toast.channelRemoveError'));
       rollbar.error(err);
+      toast.error(t('toast.channelRemoveError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -90,9 +93,8 @@ const Channels = () => {
       setShowRenameModal(false);
       toast.success(t('toast.channelRenamed'));
     } catch (err) {
-      console.error(t('channels.error'), err);
-      toast.error(t('toast.channelRenameError'));
       rollbar.error(err);
+      toast.error(t('toast.channelRenameError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -111,8 +113,8 @@ const Channels = () => {
         channel={channel}
         isActive={channel.id === currentChannelId}
         onClick={() => handleChannelClick(channel.id)}
-        onRemoveClick={(chan) => { setSelectedChannel(chan); setShowRemoveModal(true); }}
-        onRenameClick={(chan) => { setSelectedChannel(chan); setShowRenameModal(true); }}
+        onRemoveClick={() => { setSelectedChannel(channel); setShowRemoveModal(true); }}
+        onRenameClick={() => { setSelectedChannel(channel); setShowRenameModal(true); }}
       />
     ));
   };

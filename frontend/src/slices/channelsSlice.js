@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
@@ -51,15 +50,10 @@ const channelsSlice = createSlice({
         state.status = 'succeeded';
         state.channels = action.payload;
         if (!state.currentChannelId) {
-          const generalChannel = state.channels.find(
-            (ch) => ch.name === 'general',
-          );
-
-          if (generalChannel) {
-            state.currentChannelId = generalChannel.id;
-          } else if (state.channels.length > 0) {
-            state.currentChannelId = state.channels[0].id;
-          }
+          const general = state.channels.find((c) => c.name === 'general');
+          state.currentChannelId = general
+            ? general.id
+            : (state.channels[0] && state.channels[0].id);
         }
       })
       .addCase(fetchChannels.rejected, (state, action) => {
@@ -70,6 +64,14 @@ const channelsSlice = createSlice({
 });
 
 export const {
-  setCurrentChannel, addChannel, updateChannel, removeChannel,
+  setCurrentChannel,
+  addChannel,
+  updateChannel,
+  removeChannel,
 } = channelsSlice.actions;
+
+export const selectCurrentChannel = (state) => (
+  state.channels.channels.find((c) => c.id === state.channels.currentChannelId)
+);
+
 export default channelsSlice.reducer;

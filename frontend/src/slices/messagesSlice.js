@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
@@ -73,4 +72,10 @@ const messagesSlice = createSlice({
 });
 
 export const { addMessage, confirmMessage } = messagesSlice.actions;
+
+export const selectMessagesForCurrent = (state) => {
+  const cid = state.channels.currentChannelId;
+  return state.messages.messages.filter((m) => m.channelId === cid);
+};
+
 export default messagesSlice.reducer;
