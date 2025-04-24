@@ -1,20 +1,19 @@
 import React, { StrictMode, useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Provider } from 'react-redux';
-import { I18nextProvider } from 'react-i18next';
-import Rollbar from 'rollbar';
+import { Provider as ReduxProvider } from 'react-redux';
 import { Provider as RollbarProvider, ErrorBoundary } from '@rollbar/react';
+import { I18nextProvider } from 'react-i18next';
 import initI18n from './i18next';
 import { SocketProvider } from './socketContext';
 import store from './slices';
 import App from './App.jsx';
 
-const rollbar = new Rollbar({
-  accessToken: 'a85dea5dcfd8417996898075f756209c876169ff5925606768fe7a794b5446da53e33396fae75abe497962fe65ad564d',
-  environment: 'development',
+const rollbarConfig = {
+  accessToken: import.meta.env.VITE_ROLLBAR_ACCESS_TOKEN || '',
+  environment: import.meta.env.MODE || 'development',
   captureUncaught: true,
   captureUnhandledRejections: true,
-});
+};
 
 const Root = () => {
   const [i18nInstance, setI18nInstance] = useState(null);
@@ -27,15 +26,15 @@ const Root = () => {
 
   return (
     <StrictMode>
-      <RollbarProvider instance={rollbar}>
+      <RollbarProvider config={rollbarConfig}>
         <ErrorBoundary>
-          <Provider store={store}>
+          <ReduxProvider store={store}>
             <I18nextProvider i18n={i18nInstance}>
               <SocketProvider>
                 <App />
               </SocketProvider>
             </I18nextProvider>
-          </Provider>
+          </ReduxProvider>
         </ErrorBoundary>
       </RollbarProvider>
     </StrictMode>
