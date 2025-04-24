@@ -1,3 +1,4 @@
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import AddChannelModal from './modal/Add.jsx';
 import RenameChannelModal from './modal/Rename.jsx';
