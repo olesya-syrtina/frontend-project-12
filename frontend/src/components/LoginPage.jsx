@@ -5,19 +5,18 @@ import {
   Container, Row, Col, Card, Form, Button,
 } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { useRollbar } from '@rollbar/react';
-import { logIn } from '../slices/authSlice';
+import { useAuth } from '../context/AuthContext.jsx';
 import loginPic from '../assets/loginPic.jpg';
 import Header from './Header.jsx';
+import PATHS from '../routes.js';
 
 const LoginPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
+  const { logIn } = useAuth();
   const rollbar = useRollbar();
 
   const formik = useFormik({
@@ -33,9 +32,9 @@ const LoginPage = () => {
         });
         const { token } = response.data;
         const { username } = response.data;
-        dispatch(logIn({ token, username }));
+        logIn({ token, username });
         setStatus(null);
-        navigate('/');
+        navigate(PATHS.HOME);
         return true;
       } catch (error) {
         if (error.response && error.response.status === 401) {
@@ -43,7 +42,6 @@ const LoginPage = () => {
         } else {
           setStatus(t('login.error.generic'));
         }
-        console.error(t('login.error.generic'), error);
         toast.error(t('toast.networkError'));
         rollbar.error(error);
         return false;
@@ -117,11 +115,11 @@ const LoginPage = () => {
               </Card.Body>
               <Card.Footer className="p-4">
                 <div className="text-center">
-                  <span>
+                <span>
                     {t('login.noAccount')}
                     {' '}
                   </span>
-                  <a href="/signup">{t('login.link.signup')}</a>
+                  <a href={PATHS.SIGNUP}>{t('login.link.signup')}</a>
                 </div>
               </Card.Footer>
             </Card>

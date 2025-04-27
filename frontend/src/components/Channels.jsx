@@ -1,18 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Nav, Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { useRollbar } from '@rollbar/react';
-import {
-  setCurrentChannel, addChannel, updateChannel, removeChannel,
-  fetchChannels,
-} from '../slices/channelsSlice.js';
+import { fetchChannels, setCurrentChannel } from '../slices/channelsSlice.js';
+import { openModal } from '../slices/uiSlice.js';
 import Channel from './Channel.jsx';
-import AddChannelModal from './modal/Add.jsx';
-import RemoveChannelModal from './modal/Remove.jsx';
-import RenameChannelModal from './modal/Rename.jsx';
 
 const Channels = () => {
   const { t } = useTranslation();
@@ -21,84 +16,68 @@ const Channels = () => {
   const {
     channels, status, currentChannelId, error,
   } = useSelector((state) => state.channels);
-  const { token } = useSelector((state) => state.authorization);
 
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showRemoveModal, setShowRemoveModal] = useState(false);
-  const [showRenameModal, setShowRenameModal] = useState(false);
-  const [selectedChannel, setSelectedChannel] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useState(() => {
+  useEffect(() => {
     if (status === 'idle') dispatch(fetchChannels());
   }, [dispatch, status]);
 
-  const existingChannelNames = channels.map((c) => c.name);
+  const names = channels.map((c) => c.name);
 
-  const handleChannelClick = (channelId) => {
-    dispatch(setCurrentChannel(channelId));
-  };
+  const onAdd = () => dispatch(openModal({
+    type: 'add',
+    props: {
+      existingChannelNames: names,
+      onSubmit: async (name) => {
+        try {
+          const { data } = await axios.post('/api/v1/channels', { name }, {
+          });
+          dispatch(setCurrentChannel(data.id));
+          toast.success(t('toast.channelCreated'));
+          dispatch(openModal({ type: null }));
+        } catch (err) {
+          rollbar.error(err);
+          toast.error(t('toast.channelCreateError'));
+        }
+      },
+    },
+  }));
 
-  const handleAddChannel = async (name) => {
-    setIsSubmitting(true);
-    try {
-      const { data: newChannel } = await axios.post(
-        '/api/v1/channels',
-        { name },
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
-      dispatch(addChannel(newChannel));
-      dispatch(setCurrentChannel(newChannel.id));
-      setShowAddModal(false);
-      toast.success(t('toast.channelCreated'));
-    } catch (err) {
-      rollbar.error(err);
-      toast.error(t('toast.channelCreateError'));
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  const onRemove = (channel) => dispatch(openModal({
+    type: 'remove',
+    props: {
+      channelId: channel.id,
+      onConfirm: async () => {
+        try {
+          await axios.delete(`/api/v1/channels/${channel.id}`, {
+          });
+          toast.success(t('toast.channelRemoved'));
+          dispatch(openModal({ type: null }));
+        } catch (err) {
+          rollbar.error(err);
+          toast.error(t('toast.channelRemoveError'));
+        }
+      },
+    },
+  }));
 
-  const handleRemoveChannel = async () => {
-    if (!selectedChannel) return;
-    setIsSubmitting(true);
-    try {
-      await axios.delete(`/api/v1/channels/${selectedChannel.id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      dispatch(removeChannel(selectedChannel.id));
-      if (currentChannelId === selectedChannel.id) {
-        dispatch(setCurrentChannel('1'));
-      }
-      setShowRemoveModal(false);
-      toast.success(t('toast.channelRemoved'));
-    } catch (err) {
-      rollbar.error(err);
-      toast.error(t('toast.channelRemoveError'));
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleRenameChannel = async (name) => {
-    if (!selectedChannel) return;
-    setIsSubmitting(true);
-    try {
-      const { data: updatedChannel } = await axios.patch(
-        `/api/v1/channels/${selectedChannel.id}`,
-        { name },
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
-      dispatch(updateChannel(updatedChannel));
-      setShowRenameModal(false);
-      toast.success(t('toast.channelRenamed'));
-    } catch (err) {
-      rollbar.error(err);
-      toast.error(t('toast.channelRenameError'));
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  const onRename = (channel) => dispatch(openModal({
+    type: 'rename',
+    props: {
+      currentName: channel.name,
+      existingChannelNames: names.filter((n) => n !== channel.name),
+      onSubmit: async (name) => {
+        try {
+          await axios.patch(`/api/v1/channels/${channel.id}`, { name }, {
+          });
+          toast.success(t('toast.channelRenamed'));
+          dispatch(openModal({ type: null }));
+        } catch (err) {
+          rollbar.error(err);
+          toast.error(t('toast.channelRenameError'));
+        }
+      },
+    },
+  }));
 
   const renderContent = () => {
     if (status === 'loading') {
@@ -112,9 +91,9 @@ const Channels = () => {
         key={channel.id}
         channel={channel}
         isActive={channel.id === currentChannelId}
-        onClick={() => handleChannelClick(channel.id)}
-        onRemoveClick={() => { setSelectedChannel(channel); setShowRemoveModal(true); }}
-        onRenameClick={() => { setSelectedChannel(channel); setShowRenameModal(true); }}
+        onClick={() => dispatch(setCurrentChannel(channel.id))}
+        onRemoveClick={() => onRemove(channel)}
+        onRenameClick={() => onRename(channel)}
       />
     ));
   };
@@ -123,34 +102,13 @@ const Channels = () => {
     <div className="d-flex flex-column h-100">
       <div className="d-flex mt-1 justify-content-between mb-2 ps-4 pe-2 p-4">
         <strong>{t('channels.title')}</strong>
-        <Button variant="outline-primary" size="sm" onClick={() => setShowAddModal(true)}>
+        <Button variant="outline-primary" size="sm" onClick={onAdd}>
           {t('channels.add')}
         </Button>
       </div>
       <Nav variant="pills" className="flex-column overflow-auto" style={{ flexGrow: 1 }}>
         {renderContent()}
       </Nav>
-      <AddChannelModal
-        show={showAddModal}
-        handleClose={() => setShowAddModal(false)}
-        existingChannelNames={existingChannelNames}
-        onSubmit={handleAddChannel}
-        isSubmitting={isSubmitting}
-      />
-      <RemoveChannelModal
-        show={showRemoveModal}
-        handleClose={() => setShowRemoveModal(false)}
-        onConfirm={handleRemoveChannel}
-        isSubmitting={isSubmitting}
-      />
-      <RenameChannelModal
-        show={showRenameModal}
-        handleClose={() => setShowRenameModal(false)}
-        currentName={selectedChannel?.name}
-        existingChannelNames={existingChannelNames}
-        onSubmit={handleRenameChannel}
-        isSubmitting={isSubmitting}
-      />
     </div>
   );
 };

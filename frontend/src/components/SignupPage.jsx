@@ -4,19 +4,20 @@ import {
 } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { useRollbar } from '@rollbar/react';
+
 import headerImage from '../assets/avatar_1.jpg';
-import { logIn } from '../slices/authSlice';
+import { useAuth } from '../context/AuthContext.jsx';
 import Header from './Header.jsx';
+import PATHS from '../routes.js';
 
 const SignupPage = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
+  const { logIn } = useAuth();
   const navigate = useNavigate();
   const rollbar = useRollbar();
 
@@ -46,8 +47,8 @@ const SignupPage = () => {
           username: values.username,
           password: values.password,
         });
-        dispatch(logIn({ token: response.data.token, username: response.data.username }));
-        navigate('/');
+        logIn({ token: response.data.token, username: response.data.username });
+        navigate(PATHS.HOME);
       } catch (error) {
         if (error.response && error.response.status === 409) {
           setFieldError('username', t('signup.error.userExists'));

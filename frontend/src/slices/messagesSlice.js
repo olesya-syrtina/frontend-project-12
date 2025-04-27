@@ -3,12 +3,9 @@ import axios from 'axios';
 
 export const fetchMessages = createAsyncThunk(
   'messages/fetchMessages',
-  async (_, { getState, rejectWithValue }) => {
-    const { token } = getState().authorization;
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('/api/v1/messages', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.get('/api/v1/messages');
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Ошибка получения сообщений');

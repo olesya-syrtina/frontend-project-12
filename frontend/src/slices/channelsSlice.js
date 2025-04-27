@@ -3,12 +3,9 @@ import axios from 'axios';
 
 export const fetchChannels = createAsyncThunk(
   'channels/fetchChannels',
-  async (_, { getState, rejectWithValue }) => {
-    const { token } = getState().authorization;
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('/api/v1/channels', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.get('/api/v1/channels');
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Ошибка получения каналов');
@@ -38,7 +35,14 @@ const channelsSlice = createSlice({
       }
     },
     removeChannel: (state, action) => {
-      state.channels = state.channels.filter((ch) => ch.id !== action.payload);
+      const removedId = action.payload;
+      state.channels = state.channels.filter((c) => c.id !== removedId);
+      if (state.currentChannelId === removedId) {
+        const general = state.channels.find((c) => c.name === 'general');
+        state.currentChannelId = general
+          ? general.id
+          : (state.channels[0] && state.channels[0].id);
+      }
     },
   },
   extraReducers: (builder) => {
@@ -64,14 +68,7 @@ const channelsSlice = createSlice({
 });
 
 export const {
-  setCurrentChannel,
-  addChannel,
-  updateChannel,
-  removeChannel,
+  setCurrentChannel, addChannel, updateChannel, removeChannel,
 } = channelsSlice.actions;
-
-export const selectCurrentChannel = (state) => (
-  state.channels.channels.find((c) => c.id === state.channels.currentChannelId)
-);
 
 export default channelsSlice.reducer;

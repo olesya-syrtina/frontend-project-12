@@ -10,13 +10,14 @@ import { toast } from 'react-toastify';
 import leoProfanity from 'leo-profanity';
 import { useRollbar } from '@rollbar/react';
 import { addMessage, confirmMessage, fetchMessages } from '../slices/messagesSlice.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const Messages = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const rollbar = useRollbar();
   const { messages, status, error } = useSelector((state) => state.messages);
-  const { token, username } = useSelector((state) => state.authorization);
+  const { username } = useAuth();
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
   const channels = useSelector((state) => state.channels.channels);
 
@@ -55,7 +56,6 @@ const Messages = () => {
       const { data } = await axios.post(
         '/api/v1/messages',
         { body: cleanMessage, channelId: currentChannelId, username },
-        { headers: { Authorization: `Bearer ${token}` } },
       );
       dispatch(confirmMessage({ tempId, message: data }));
     } catch (err) {
