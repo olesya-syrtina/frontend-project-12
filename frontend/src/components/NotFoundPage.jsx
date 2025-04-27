@@ -1,13 +1,12 @@
-import React from 'react';
 import {
   Container, Row, Col, Card,
-} from 'react-bootstrap';
-import { useTranslation } from 'react-i18next';
-import notFoundPic from '../assets/notFound.svg';
-import Header from './Header.jsx';
+} from 'react-bootstrap'
+import { useTranslation } from 'react-i18next'
+import notFoundPic from '../assets/notFound.svg'
+import Header from './Header.jsx'
 
 const NotFoundPage = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
     <>
@@ -30,7 +29,7 @@ const NotFoundPage = () => {
         </Row>
       </Container>
     </>
-  );
-};
+  )
+}
 
-export default NotFoundPage;
+export default NotFoundPage

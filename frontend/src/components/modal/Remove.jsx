@@ -1,11 +1,10 @@
-import React from 'react';
-import { Modal, Button } from 'react-bootstrap';
-import { useTranslation } from 'react-i18next';
+import { Modal, Button } from 'react-bootstrap'
+import { useTranslation } from 'react-i18next'
 
 const RemoveChannelModal = ({
   show, handleClose, onConfirm, isSubmitting,
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <Modal show={show} onHide={handleClose} centered>
       <Modal.Header closeButton>
@@ -23,7 +22,7 @@ const RemoveChannelModal = ({
         </div>
       </Modal.Body>
     </Modal>
-  );
-};
+  )
+}
 
-export default RemoveChannelModal;
+export default RemoveChannelModal

@@ -1,17 +1,18 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import axios from 'axios'
 
 export const fetchMessages = createAsyncThunk(
   'messages/fetchMessages',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('/api/v1/messages');
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || 'Ошибка получения сообщений');
+      const response = await axios.get('/api/v1/messages')
+      return response.data
+    }
+    catch (error) {
+      return rejectWithValue(error.response?.data || 'Ошибка получения сообщений')
     }
   },
-);
+)
 
 const messagesSlice = createSlice({
   name: 'messages',
@@ -22,10 +23,10 @@ const messagesSlice = createSlice({
   },
   reducers: {
     addMessage: (state, action) => {
-      const newMsg = action.payload;
+      const newMsg = action.payload
       const exists = state.messages.some((m) => {
-        if (m.id && newMsg.id && m.id === newMsg.id) return true;
-        if (m.tempId && newMsg.tempId && m.tempId === newMsg.tempId) return true;
+        if (m.id && newMsg.id && m.id === newMsg.id) return true
+        if (m.tempId && newMsg.tempId && m.tempId === newMsg.tempId) return true
         if (
           ((m.optimistic && !newMsg.optimistic)
             || (newMsg.optimistic && !m.optimistic))
@@ -33,46 +34,47 @@ const messagesSlice = createSlice({
           && m.username === newMsg.username
           && m.channelId === newMsg.channelId
         ) {
-          return true;
+          return true
         }
-        return false;
-      });
+        return false
+      })
       if (!exists) {
-        state.messages.push(newMsg);
+        state.messages.push(newMsg)
       }
     },
     confirmMessage: (state, action) => {
-      const { tempId, message } = action.payload;
-      const index = state.messages.findIndex((m) => m.tempId === tempId);
+      const { tempId, message } = action.payload
+      const index = state.messages.findIndex(m => m.tempId === tempId)
       if (index !== -1) {
-        state.messages[index] = message;
-      } else {
-        const exists = state.messages.some((m) => m.id === message.id);
-        if (!exists) state.messages.push(message);
+        state.messages[index] = message
+      }
+      else {
+        const exists = state.messages.some(m => m.id === message.id)
+        if (!exists) state.messages.push(message)
       }
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchMessages.pending, (state) => {
-        state.status = 'loading';
+        state.status = 'loading'
       })
       .addCase(fetchMessages.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.messages = action.payload;
+        state.status = 'succeeded'
+        state.messages = action.payload
       })
       .addCase(fetchMessages.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload;
-      });
+        state.status = 'failed'
+        state.error = action.payload
+      })
   },
-});
+})
 
-export const { addMessage, confirmMessage } = messagesSlice.actions;
+export const { addMessage, confirmMessage } = messagesSlice.actions
 
 export const selectMessagesForCurrent = (state) => {
-  const cid = state.channels.currentChannelId;
-  return state.messages.messages.filter((m) => m.channelId === cid);
-};
+  const cid = state.channels.currentChannelId
+  return state.messages.messages.filter(m => m.channelId === cid)
+}
 
-export default messagesSlice.reducer;
+export default messagesSlice.reducer

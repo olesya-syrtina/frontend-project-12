@@ -1,14 +1,14 @@
-import React, { useEffect, useRef } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { useTranslation } from 'react-i18next';
-import leoProfanity from 'leo-profanity';
+import { useEffect, useRef } from 'react'
+import { Modal, Button, Form } from 'react-bootstrap'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
+import { useTranslation } from 'react-i18next'
+import leoProfanity from 'leo-profanity'
 
 const AddChannelModal = ({
   show, handleClose, existingChannelNames, onSubmit, isSubmitting,
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   const validationSchema = Yup.object({
     name: Yup.string()
@@ -16,25 +16,25 @@ const AddChannelModal = ({
       .max(20, t('modal.add.length'))
       .notOneOf(existingChannelNames, t('modal.add.duplicate'))
       .required(t('modal.add.required')),
-  });
+  })
 
   const formik = useFormik({
     initialValues: { name: '' },
     validationSchema,
     onSubmit: (values) => {
-      const cleanName = leoProfanity.clean(values.name);
-      onSubmit(cleanName);
+      const cleanName = leoProfanity.clean(values.name)
+      onSubmit(cleanName)
     },
-  });
+  })
 
-  const inputRef = useRef(null);
+  const inputRef = useRef(null)
   useEffect(() => {
     if (show) {
       setTimeout(() => {
-        inputRef.current?.focus();
-      }, 100);
+        inputRef.current?.focus()
+      }, 100)
     }
-  }, [show]);
+  }, [show])
 
   return (
     <Modal show={show} onHide={handleClose} centered>
@@ -68,7 +68,7 @@ const AddChannelModal = ({
         </Form>
       </Modal.Body>
     </Modal>
-  );
-};
+  )
+}
 
-export default AddChannelModal;
+export default AddChannelModal

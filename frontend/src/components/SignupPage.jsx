@@ -1,25 +1,24 @@
-import React from 'react';
 import {
   Container, Row, Col, Card, Form, Button,
-} from 'react-bootstrap';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
-import { useRollbar } from '@rollbar/react';
+} from 'react-bootstrap'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { toast } from 'react-toastify'
+import { useRollbar } from '@rollbar/react'
 
-import headerImage from '../assets/avatar_1.jpg';
-import { useAuth } from '../context/AuthContext.jsx';
-import Header from './Header.jsx';
-import PATHS from '../routes.js';
+import headerImage from '../assets/avatar_1.jpg'
+import { useAuth } from '../context/AuthContext.jsx'
+import Header from './Header.jsx'
+import PATHS from '../routes.js'
 
 const SignupPage = () => {
-  const { t } = useTranslation();
-  const { logIn } = useAuth();
-  const navigate = useNavigate();
-  const rollbar = useRollbar();
+  const { t } = useTranslation()
+  const { logIn } = useAuth()
+  const navigate = useNavigate()
+  const rollbar = useRollbar()
 
   const validationSchema = Yup.object({
     username: Yup.string()
@@ -32,7 +31,7 @@ const SignupPage = () => {
     confirmPassword: Yup.string()
       .oneOf([Yup.ref('password')], t('signup.validation.passwordsMatch'))
       .required(t('signup.validation.required')),
-  });
+  })
 
   const formik = useFormik({
     initialValues: {
@@ -46,22 +45,25 @@ const SignupPage = () => {
         const response = await axios.post('/api/v1/signup', {
           username: values.username,
           password: values.password,
-        });
-        logIn({ token: response.data.token, username: response.data.username });
-        navigate(PATHS.HOME);
-      } catch (error) {
+        })
+        logIn({ token: response.data.token, username: response.data.username })
+        navigate(PATHS.HOME)
+      }
+      catch (error) {
         if (error.response && error.response.status === 409) {
-          setFieldError('username', t('signup.error.userExists'));
-        } else {
-          setFieldError('username', t('signup.error.generic'));
+          setFieldError('username', t('signup.error.userExists'))
         }
-        toast.error(t('toast.networkError'));
-        rollbar.error(error);
-      } finally {
-        setSubmitting(false);
+        else {
+          setFieldError('username', t('signup.error.generic'))
+        }
+        toast.error(t('toast.networkError'))
+        rollbar.error(error)
+      }
+      finally {
+        setSubmitting(false)
       }
     },
-  });
+  })
 
   return (
     <>
@@ -134,7 +136,7 @@ const SignupPage = () => {
         </Row>
       </Container>
     </>
-  );
-};
+  )
+}
 
-export default SignupPage;
+export default SignupPage

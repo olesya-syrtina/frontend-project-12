@@ -1,20 +1,19 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import AddChannelModal from './modal/Add.jsx';
-import RenameChannelModal from './modal/Rename.jsx';
-import RemoveChannelModal from './modal/Remove.jsx';
-import { closeModal } from '../slices/uiSlice.js';
+import { useSelector, useDispatch } from 'react-redux'
+import AddChannelModal from './modal/Add.jsx'
+import RenameChannelModal from './modal/Rename.jsx'
+import RemoveChannelModal from './modal/Remove.jsx'
+import { closeModal } from '../slices/uiSlice.js'
 
 const ModalContainer = () => {
-  const dispatch = useDispatch();
-  const { modal, modalProps } = useSelector((s) => s.ui);
-  const hide = () => dispatch(closeModal());
+  const dispatch = useDispatch()
+  const { modal, modalProps } = useSelector(s => s.ui)
+  const hide = () => dispatch(closeModal())
 
-  if (!modal) return null;
+  if (!modal) return null
 
   switch (modal) {
     case 'add': {
-      const { existingChannelNames, onSubmit } = modalProps;
+      const { existingChannelNames, onSubmit } = modalProps
       return (
         <AddChannelModal
           show
@@ -22,10 +21,10 @@ const ModalContainer = () => {
           existingChannelNames={existingChannelNames}
           onSubmit={onSubmit}
         />
-      );
+      )
     }
     case 'rename': {
-      const { currentName, existingChannelNames, onSubmit } = modalProps;
+      const { currentName, existingChannelNames, onSubmit } = modalProps
       return (
         <RenameChannelModal
           show
@@ -34,21 +33,21 @@ const ModalContainer = () => {
           existingChannelNames={existingChannelNames}
           onSubmit={onSubmit}
         />
-      );
+      )
     }
     case 'remove': {
-      const { onConfirm } = modalProps;
+      const { onConfirm } = modalProps
       return (
         <RemoveChannelModal
           show
           handleClose={hide}
           onConfirm={onConfirm}
         />
-      );
+      )
     }
     default:
-      return null;
+      return null
   }
-};
+}
 
-export default ModalContainer;
+export default ModalContainer

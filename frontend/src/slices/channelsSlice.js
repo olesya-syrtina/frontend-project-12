@@ -1,17 +1,18 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import axios from 'axios'
 
 export const fetchChannels = createAsyncThunk(
   'channels/fetchChannels',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('/api/v1/channels');
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || 'Ошибка получения каналов');
+      const response = await axios.get('/api/v1/channels')
+      return response.data
+    }
+    catch (error) {
+      return rejectWithValue(error.response?.data || 'Ошибка получения каналов')
     }
   },
-);
+)
 
 const channelsSlice = createSlice({
   name: 'channels',
@@ -23,52 +24,52 @@ const channelsSlice = createSlice({
   },
   reducers: {
     setCurrentChannel: (state, action) => {
-      state.currentChannelId = action.payload;
+      state.currentChannelId = action.payload
     },
     addChannel: (state, action) => {
-      state.channels.push(action.payload);
+      state.channels.push(action.payload)
     },
     updateChannel: (state, action) => {
-      const index = state.channels.findIndex((ch) => ch.id === action.payload.id);
+      const index = state.channels.findIndex(ch => ch.id === action.payload.id)
       if (index !== -1) {
-        state.channels[index] = action.payload;
+        state.channels[index] = action.payload
       }
     },
     removeChannel: (state, action) => {
-      const removedId = action.payload;
-      state.channels = state.channels.filter((c) => c.id !== removedId);
+      const removedId = action.payload
+      state.channels = state.channels.filter(c => c.id !== removedId)
       if (state.currentChannelId === removedId) {
-        const general = state.channels.find((c) => c.name === 'general');
+        const general = state.channels.find(c => c.name === 'general')
         state.currentChannelId = general
           ? general.id
-          : (state.channels[0] && state.channels[0].id);
+          : (state.channels[0] && state.channels[0].id)
       }
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchChannels.pending, (state) => {
-        state.status = 'loading';
+        state.status = 'loading'
       })
       .addCase(fetchChannels.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.channels = action.payload;
+        state.status = 'succeeded'
+        state.channels = action.payload
         if (!state.currentChannelId) {
-          const general = state.channels.find((c) => c.name === 'general');
+          const general = state.channels.find(c => c.name === 'general')
           state.currentChannelId = general
             ? general.id
-            : (state.channels[0] && state.channels[0].id);
+            : (state.channels[0] && state.channels[0].id)
         }
       })
       .addCase(fetchChannels.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload;
-      });
+        state.status = 'failed'
+        state.error = action.payload
+      })
   },
-});
+})
 
 export const {
   setCurrentChannel, addChannel, updateChannel, removeChannel,
-} = channelsSlice.actions;
+} = channelsSlice.actions
 
-export default channelsSlice.reducer;
+export default channelsSlice.reducer

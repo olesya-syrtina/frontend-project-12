@@ -1,23 +1,22 @@
-import React from 'react';
-import axios from 'axios';
-import { useFormik } from 'formik';
+import axios from 'axios'
+import { useFormik } from 'formik'
 import {
   Container, Row, Col, Card, Form, Button,
-} from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
-import { useRollbar } from '@rollbar/react';
-import { useAuth } from '../context/AuthContext.jsx';
-import loginPic from '../assets/loginPic.jpg';
-import Header from './Header.jsx';
-import PATHS from '../routes.js';
+} from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { toast } from 'react-toastify'
+import { useRollbar } from '@rollbar/react'
+import { useAuth } from '../context/AuthContext.jsx'
+import loginPic from '../assets/loginPic.jpg'
+import Header from './Header.jsx'
+import PATHS from '../routes.js'
 
 const LoginPage = () => {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  const { logIn } = useAuth();
-  const rollbar = useRollbar();
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  const { logIn } = useAuth()
+  const rollbar = useRollbar()
 
   const formik = useFormik({
     initialValues: {
@@ -29,25 +28,27 @@ const LoginPage = () => {
         const response = await axios.post('/api/v1/login', {
           username: values.username,
           password: values.password,
-        });
-        const { token } = response.data;
-        const { username } = response.data;
-        logIn({ token, username });
-        setStatus(null);
-        navigate(PATHS.HOME);
-        return true;
-      } catch (error) {
+        })
+        const { token } = response.data
+        const { username } = response.data
+        logIn({ token, username })
+        setStatus(null)
+        navigate(PATHS.HOME)
+        return true
+      }
+      catch (error) {
         if (error.response && error.response.status === 401) {
-          setStatus(t('login.error.invalid'));
-        } else {
-          setStatus(t('login.error.generic'));
+          setStatus(t('login.error.invalid'))
         }
-        toast.error(t('toast.networkError'));
-        rollbar.error(error);
-        return false;
+        else {
+          setStatus(t('login.error.generic'))
+        }
+        toast.error(t('toast.networkError'))
+        rollbar.error(error)
+        return false
       }
     },
-  });
+  })
 
   return (
     <>
@@ -115,7 +116,7 @@ const LoginPage = () => {
               </Card.Body>
               <Card.Footer className="p-4">
                 <div className="text-center">
-                <span>
+                  <span>
                     {t('login.noAccount')}
                     {' '}
                   </span>
@@ -127,7 +128,7 @@ const LoginPage = () => {
         </Row>
       </Container>
     </>
-  );
-};
+  )
+}
 
-export default LoginPage;
+export default LoginPage

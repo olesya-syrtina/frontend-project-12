@@ -86,6 +86,6 @@ const ru = {
   'notFound.homePage': 'Но вы можете перейти',
   'notFound.homePageLink': 'на главную страницу',
 
-};
+}
 
-export default ru;
+export default ru

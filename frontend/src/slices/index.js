@@ -1,7 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit';
-import channelsReducer from './channelsSlice.js';
-import messagesReducer from './messagesSlice.js';
-import uiReducer from './uiSlice.js';
+import { configureStore } from '@reduxjs/toolkit'
+import channelsReducer from './channelsSlice.js'
+import messagesReducer from './messagesSlice.js'
+import uiReducer from './uiSlice.js'
 
 export default configureStore({
   reducer: {
@@ -9,4 +9,4 @@ export default configureStore({
     messages: messagesReducer,
     ui: uiReducer,
   },
-});
+})

@@ -1,6 +1,6 @@
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import ruTranslation from './locales/ru';
+import i18n from 'i18next'
+import { initReactI18next } from 'react-i18next'
+import ruTranslation from './locales/ru'
 
 export default async function initI18n() {
   await i18n
@@ -10,6 +10,6 @@ export default async function initI18n() {
       lng: 'ru',
       fallbackLng: 'ru',
       interpolation: { escapeValue: false },
-    });
-  return i18n;
+    })
+  return i18n
 }

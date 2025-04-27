@@ -1,41 +1,41 @@
-import React, { useEffect, useRef } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { useTranslation } from 'react-i18next';
-import leoProfanity from 'leo-profanity';
+import { useEffect, useRef } from 'react'
+import { Modal, Button, Form } from 'react-bootstrap'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
+import { useTranslation } from 'react-i18next'
+import leoProfanity from 'leo-profanity'
 
 const RenameChannelModal = ({
   show, handleClose, currentName, existingChannelNames, onSubmit, isSubmitting,
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   const validationSchema = Yup.object({
     name: Yup.string()
       .min(3, t('modal.rename.length'))
       .max(20, t('modal.rename.length'))
-      .notOneOf(existingChannelNames.filter((name) => name !== currentName), t('modal.rename.duplicate'))
+      .notOneOf(existingChannelNames.filter(name => name !== currentName), t('modal.rename.duplicate'))
       .required(t('modal.rename.required')),
-  });
+  })
 
   const formik = useFormik({
     initialValues: { name: currentName },
     validationSchema,
     onSubmit: (values) => {
-      const cleanName = leoProfanity.clean(values.name);
-      onSubmit(cleanName);
+      const cleanName = leoProfanity.clean(values.name)
+      onSubmit(cleanName)
     },
     enableReinitialize: true,
-  });
+  })
 
-  const inputRef = useRef(null);
+  const inputRef = useRef(null)
   useEffect(() => {
     if (show) {
       setTimeout(() => {
-        inputRef.current?.focus();
-      }, 100);
+        inputRef.current?.focus()
+      }, 100)
     }
-  }, [show]);
+  }, [show])
 
   return (
     <Modal show={show} onHide={handleClose} centered>
@@ -69,7 +69,7 @@ const RenameChannelModal = ({
         </Form>
       </Modal.Body>
     </Modal>
-  );
-};
+  )
+}
 
-export default RenameChannelModal;
+export default RenameChannelModal
